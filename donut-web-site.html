@@ -1,11 +1,12 @@
 <!DOCTYPE>
 <html>
   <head>
-    <title> Donut HQ </title>
+    <title> Donut HQ  </title>
   </head>
   <body>
     <header>
       <h1>WELCOME TO DONUT HQ!<h1>
+      <img src="http://bw1.bilateralwarp.netdna-cdn.com/wp-content/uploads/2014/12/homer-simpson.jpg" width="25%" align = "right" />
     </header>
     <main>
       <section id="storeData">
@@ -18,12 +19,14 @@
         <button id="addStore" onclick="addStoreButtonClicked()"> Add Store! </button>
       </section>
       <section id="storeList">
-        <h2>List of stores</h2>
+        <h2>List of Stores</h2>
       </section>
-      <section id="storeResults">
+      <div>
         <h2>Daily Sales</h2>
-        <button id="getResults" onclick="getResultsButtonClicked()"> Get Results </button>
-      </section>
+        <button id="getResults" onclick="getResultsButtonClicked()"> Display Results </button>
+        <section  id="storeResults">
+        </section>
+      </div>
     </main>
   </body>
   <script type="text/javascript">
@@ -48,7 +51,6 @@
         for(i = 1; i <= 11; i++){
           this.hourly();
         }
-        //console.log(this.storeName + " sold " + this.dailySales + " donuts for the entire day.");
         //print totals to storeResults
         document.getElementById("storeResults").innerHTML += "<br /><br />"  + "<li>" + this.storeName + " sold " + this.dailySales + " donuts for the entire day." + "</li>";
       }
@@ -74,8 +76,16 @@
                                     document.getElementById("hoursOpen").value
                                     ));
     document.getElementById("storeList").innerHTML += "<li>" + document.getElementById("nameOfStore").value + "</li>";
+    //clear text boxes
+    document.getElementById('maxFootTraffic').value = "";
+    document.getElementById('minFootTraffic').value = "";
+    document.getElementById('percentOfPeopleEntered').value = "";
+    document.getElementById('averageNumberDonutsBought').value = "";
+    document.getElementById('nameOfStore').value = "";
+    document.getElementById('hoursOpen').value = "";
   };
   function getResultsButtonClicked() {
+      document.getElementById("storeResults").innerHTML = "";
       for (storeName in locations) {
         locations[storeName].dailyReport();
     }
