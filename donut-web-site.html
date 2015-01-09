@@ -19,14 +19,9 @@
       </section>
       <section id="storeList">
         <h2>List of stores</h2>
-        <!-- <ui>
-
-        </ui>  -->
       </section>
       <section id="storeResults">
         <button id="getResults" onclick="getResultsClicked()"> Get Results </button>
-
-
       </section>
     </main>
   </body>
@@ -60,7 +55,7 @@
     function DonutCorporation(storeList) {
       this.storeList = storeList;
       this.generateSalesInfo = function() {   //returns a jagged(?) 2-D array with list of store names and donuts sold per store that day
-        document.getElementById('storeResults').innerHTML += "Generating Sales Information for today....";
+        document.getElementById('storeResults').innerHTML += "<br>Generating Sales Information for today....<br>";
         var salesReport = [];
         for(var i=0; i<this.storeList.length; i++) {
           var storeNameAndSales = [];
@@ -74,8 +69,16 @@
                                                     //donut ( 'O' ) graph for each one
         var dailySales = this.generateSalesInfo();
         for (var i=0; i<dailySales.length; i++) {
-          document.getElementById('storeResults').innerHTML +="";   // For an extra line of spacing for output formatting.
+          document.getElementById('storeResults').innerHTML +="<br>";   // For an extra line of spacing for output formatting.
           document.getElementById('storeResults').innerHTML +="Donuts sold by " + dailySales[i][0] + ": " + dailySales[i][1];
+          var graph = "<br>";
+          for(var j=0; j<dailySales[i][1]; j++) {
+            graph += "O";
+            if(j>0 && j%100 == 0) {
+              graph += "<br>";
+            }
+          }
+          document.getElementById('storeResults').innerHTML += graph;
         }
       };
     };
@@ -83,12 +86,21 @@
     function addStoreClicked() {
       var footTrafficRange = [document.getElementById('minFootTraffic').value,
                               document.getElementById('maxFootTraffic').value];
-
+      //create new store
       storeList.push(new DonutShop(document.getElementById('storeName').value,
                                    document.getElementById('hoursOpen').value,
                                    footTrafficRange,
-                                   document.getElementById('percentOfPeopleEntered').value,
+                                   document.getElementById('percentOfPeopleEntered').value/100,
                                    document.getElementById('averageNumberDonutsBought').value));
+     //add store name to visible list of stores
+      document.getElementById('storeList').innerHTML += document.getElementById('storeName').value + "<br>";
+      //clear text boxes
+      document.getElementById('storeName').value = "";
+      document.getElementById('hoursOpen').value = "";
+      document.getElementById('minFootTraffic').value = "";
+      document.getElementById('maxFootTraffic').value = "";
+      document.getElementById('percentOfPeopleEntered').value = "";
+      document.getElementById('averageNumberDonutsBought').value = "";
     }
     function getResultsClicked() {
       var donutCorp = new DonutCorporation(storeList);
