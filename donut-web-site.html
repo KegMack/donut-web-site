@@ -15,7 +15,7 @@
         <input id="maxFootTraffic" placeholder="Maximum Passersby" />
         <input id="percentOfPeopleEntered" placeholder="% of People Entering" />
         <input id="averageNumberDonutsBought" placeholder="Average Purchase" />
-        <button id="addStore"> Add Store! </button>
+        <button id="addStore" onclick="addStoreClicked()"> Add Store! </button>
       </section>
       <section id="storeList">
         <h2>List of stores</h2>
@@ -24,12 +24,75 @@
         </ui>  -->
       </section>
       <section id="storeResults">
-        <button id="getResults"> Get Results </button>
+        <button id="getResults" onclick="getResultsClicked()"> Get Results </button>
 
 
       </section>
     </main>
   </body>
 
+  <script>
+    var storeList = [],
+        donutCorp;
 
+    function DonutShop(location, numberOfHoursOpen, hourlyFootTraffic, percentEntering, donutsOrderedPerEntrant)  {
+      this.location                = location;
+      this.numberOfHoursOpen       = numberOfHoursOpen;
+      this.hourlyFootTraffic       = hourlyFootTraffic;  //array containing min and max range
+      this.percentEntering         = percentEntering;
+      this.donutsOrderedPerEntrant = donutsOrderedPerEntrant;
+
+      this.customersPerHour = function() {
+        return(Math.ceil(Math.random() * (this.hourlyFootTraffic[1] - this.hourlyFootTraffic[0]) + this.hourlyFootTraffic[0]));
+      };
+      this.donutsSoldPerHour = function() {
+        return(this.customersPerHour() * this.percentEntering * this.donutsOrderedPerEntrant);
+      };
+      this.donutsSoldPerDay = function() {
+        var donutsSold = 0;
+        for (var i=0; i<this.numberOfHoursOpen; i++)  {
+          donutsSold += this.donutsSoldPerHour();
+        }
+        return (Math.floor(donutsSold));
+      };
+    };
+
+    function DonutCorporation(storeList) {
+      this.storeList = storeList;
+      this.generateSalesInfo = function() {   //returns a jagged(?) 2-D array with list of store names and donuts sold per store that day
+        document.getElementById('storeResults').innerHTML += "Generating Sales Information for today....";
+        var salesReport = [];
+        for(var i=0; i<this.storeList.length; i++) {
+          var storeNameAndSales = [];
+          storeNameAndSales[0] = this.storeList[i].location;
+          storeNameAndSales[1] = this.storeList[i].donutsSoldPerDay();
+          salesReport[i] = storeNameAndSales;
+        }
+        return salesReport;
+      };
+      this.listAndGraphSalesByStore = function() {  //lists total sales per store and makes a cheesy
+                                                    //donut ( 'O' ) graph for each one
+        var dailySales = this.generateSalesInfo();
+        for (var i=0; i<dailySales.length; i++) {
+          document.getElementById('storeResults').innerHTML +="";   // For an extra line of spacing for output formatting.
+          document.getElementById('storeResults').innerHTML +="Donuts sold by " + dailySales[i][0] + ": " + dailySales[i][1];
+        }
+      };
+    };
+
+    function addStoreClicked() {
+      var footTrafficRange = [document.getElementById('minFootTraffic').value,
+                              document.getElementById('maxFootTraffic').value];
+
+      storeList.push(new DonutShop(document.getElementById('storeName').value,
+                                   document.getElementById('hoursOpen').value,
+                                   footTrafficRange,
+                                   document.getElementById('percentOfPeopleEntered').value,
+                                   document.getElementById('averageNumberDonutsBought').value));
+    }
+    function getResultsClicked() {
+      var donutCorp = new DonutCorporation(storeList);
+      donutCorp.listAndGraphSalesByStore();
+    }
+  </script>
 </html>
