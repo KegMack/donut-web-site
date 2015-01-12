@@ -20,14 +20,14 @@
         <input id="maxFootTraffic" placeholder="Maximum Passersby" />
         <input id="percentOfPeopleEntered" placeholder="% of People Entering" />
         <input id="averageNumberDonutsBought" placeholder="Average Purchase" />
-        <button id="addStore" onclick="addStoreButtonClicked()"> Add Store! </button>
+        <button id="addStore" > Add Store! </button>
       </section>
       <section id="storeList">
         <h2>List of Stores</h2>
       </section>
       <div>
         <h2>Daily Sales</h2>
-        <button id="getResults" onclick="getResultsButtonClicked()"> Display Results </button>
+        <button id="getResults" > Display Results </button>
         <section  id="storeResults">
         </section>
       </div>
@@ -94,5 +94,11 @@
         locations[storeName].dailyReport();
     }
   }
+
+  var resultsButtonElement = document.getElementById('getResults');
+  resultsButtonElement.addEventListener('click', getResultsButtonClicked);
+
+  var addStoreElement = document.getElementById('addStore');
+  addStoreElement.addEventListener('click', addStoreButtonClicked);
   </script>
 </html>
