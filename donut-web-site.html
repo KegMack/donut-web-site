@@ -2,6 +2,7 @@
 <html>
   <head>
     <title> Donut HQ  </title>
+    <script src = "http://code.jquery.com/jquery-1.11.2.js"> </script>
   </head>
   <body>
     <header>
@@ -14,12 +15,12 @@
     </header>
     <main>
       <section id="storeData">
-        <input id="nameOfStore" placeholder="Store Name" />
-        <input id="hoursOpen" placeholder="Hours Open" />
-        <input id="minFootTraffic" placeholder="Minimum Passersby" />
-        <input id="maxFootTraffic" placeholder="Maximum Passersby" />
-        <input id="percentOfPeopleEntered" placeholder="% of People Entering" />
-        <input id="averageNumberDonutsBought" placeholder="Average Purchase" />
+        <input class="storeDataField" placeholder="Store Name" />
+        <input class="storeDataField" placeholder="Hours Open" />
+        <input class="storeDataField" placeholder="Minimum Passersby" />
+        <input class="storeDataField" placeholder="Maximum Passersby" />
+        <input class="storeDataField" placeholder="% of People Entering" />
+        <input class="storeDataField" placeholder="Average Purchase" />
         <button id="addStore" > Add Store! </button>
       </section>
       <section id="storeList">
@@ -33,71 +34,42 @@
       </div>
     </main>
   </body>
+
   <script type="text/javascript">
-  var locations = [];
-    function TopPotStore(footTrafficCeiling, footTrafficFloor, percentEnter, averagePurchase, storeName, storeHours) {
-      this.footTrafficCeiling = footTrafficCeiling;
-      this.footTrafficFloor = footTrafficFloor;
-      this.percentEnter = percentEnter;
-      this.averagePurchase = averagePurchase;
-      this.hourlySales = 0;
+    var locations = [];
+    function TopPotStore(storeData) {
+      this.storeName = storeData[0].value;
+      this.hours = Number(storeData[1].value);
+      this.footTrafficFloor = Number(storeData[2].value);
+      this.footTrafficCeiling = Number(storeData[3].value);
+      this.percentEnter = Number(storeData[4].value);
+      this.averagePurchase = Number(storeData[5].value);
       this.dailySales = 0;
-      this.hour = 0;
-      this.storeName = storeName;
+    };
 
-      this.hourly = function(){
-        this.hourlySales = Math.round((Math.random()*(this.footTrafficCeiling - this.footTrafficFloor) + this.footTrafficFloor) * this.percentEnter * this.averagePurchase);
-        this.hour += 1;
-        console.log(this.storeName + " sold " + this.hourlySales + " donuts during hour " + this.hour);
-        this.dailySales += this.hourlySales;
+    TopPotStore.prototype.dailySalesReport = function(){
+      this.dailySales=0;
+      for(i = 1; i <= this.hours; i++) {
+        var hourlySales = Math.round((Math.random()*(this.footTrafficCeiling - this.footTrafficFloor) + this.footTrafficFloor) * this.percentEnter * this.averagePurchase);
+        this.dailySales += hourlySales;
       }
-      this.dailyReport = function(){
-        for(i = 1; i <= 11; i++){
-          this.hourly();
-        }
-        //print totals to storeResults
-        document.getElementById("storeResults").innerHTML += "<br /><br />"  + "<li>" + this.storeName + " sold " + this.dailySales + " donuts for the entire day." + "</li>";
-      }
+      var report = "";
+      report += this.storeName + " sold " + this.dailySales + " donuts today.";
+      return report;
+    };
 
-    }
-  //these are the original store inputs from the first assignment
-  /*
-  locations.push(new TopPotStore( 220, 80, 0.10, 4,"Downtown"));
-  locations.push(new TopPotStore(  45,  5,0.45,  2,"Capitol Hill"));
-  locations.push(new TopPotStore( 250,180,0.05,  6,"South Lake Union"));
-  locations.push(new TopPotStore(  60, 20,0.20,1.5,"Wedgewood"));
-  locations.push(new TopPotStore( 175, 25,0.33,  1,"Ballard"));
-  for (storeName in locations) {
-    locations[storeName].dailyReport();
-  };*/
-
-  function addStoreButtonClicked() {
-    locations.push(new TopPotStore( document.getElementById("maxFootTraffic").value,
-                                    document.getElementById("minFootTraffic").value,
-                                    document.getElementById("percentOfPeopleEntered").value/100,
-                                    document.getElementById("averageNumberDonutsBought").value,
-                                    document.getElementById("nameOfStore").value,
-                                    document.getElementById("hoursOpen").value
-                                    ));
-    document.getElementById("storeList").innerHTML += "<li>" + document.getElementById("nameOfStore").value + "</li>";
-    //clear text boxes
-    document.getElementById('maxFootTraffic').value = "";
-    document.getElementById('minFootTraffic').value = "";
-    document.getElementById('percentOfPeopleEntered').value = "";
-    document.getElementById('averageNumberDonutsBought').value = "";
-    document.getElementById('nameOfStore').value = "";
-    document.getElementById('hoursOpen').value = "";
-  };
-  function getResultsButtonClicked() {
-      document.getElementById("storeResults").innerHTML = "";
-      for (storeName in locations) {
-        locations[storeName].dailyReport();
-    }
-  }
-
-  var resultsButtonElement = document.getElementById('getResults');
-  var addStoreElement = document.getElementById('addStore');
-  resultsButtonElement.addEventListener('click', getResultsButtonClicked);
-  addStoreElement.addEventListener('click', addStoreButtonClicked);
+  $(document).ready(function() {
+    $('#getResults').on('click', function() {
+      $('#storeResults>p').remove();
+      for (var i=0; i<locations.length; i++) {
+        $('#storeResults').append('<p>' +locations[i].dailySalesReport() + '</p>');
+      };
+    });
+    $('#addStore').on('click', function() {
+      locations.push(new TopPotStore($('.storeDataField')));
+      $('#storeList').after('<li>' + $('.storeDataField').first().val() + '</li>');
+      $('.storeDataField').val("");
+    });
+  });
   </script>
 </html>
